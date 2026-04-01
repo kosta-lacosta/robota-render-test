@@ -9,27 +9,42 @@ async function testRobotaLogin() {
   const page = await context.newPage();
 
   try {
-    console.log('OPEN robota');
+    const results = [];
 
-    await page.goto('https://employer.robota.ua/', {
-      waitUntil: 'domcontentloaded',
-      timeout: 60000
-    });
+    const urlsToTest = [
+      'https://robota.ua/',
+      'https://www.robota.ua/',
+      'https://auth.robota.ua/'
+    ];
 
-    await page.goto('https://auth.robota.ua/', {
-      waitUntil: 'domcontentloaded',
-      timeout: 60000
-    });
+    for (const url of urlsToTest) {
+      try {
+        console.log('OPEN', url);
 
-    console.log('PAGE LOADED');
+        const response = await page.goto(url, {
+          waitUntil: 'domcontentloaded',
+          timeout: 60000
+        });
 
-    const title = await page.title();
-    const url = page.url();
+        results.push({
+          url,
+          ok: true,
+          finalUrl: page.url(),
+          title: await page.title(),
+          status: response ? response.status() : null
+        });
+      } catch (e) {
+        results.push({
+          url,
+          ok: false,
+          error: e.message
+        });
+      }
+    }
 
     return {
       ok: true,
-      title,
-      url
+      results
     };
   } catch (e) {
     return {
