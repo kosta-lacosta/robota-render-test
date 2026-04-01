@@ -9,7 +9,7 @@ async function testRobotaLogin() {
   const page = await context.newPage();
 
   try {
-    console.log("OPEN robota");
+    console.log('OPEN robota');
 
     await page.goto('https://employer.robota.ua/', {
       waitUntil: 'domcontentloaded',
@@ -21,16 +21,16 @@ async function testRobotaLogin() {
       timeout: 60000
     });
 
-    console.log("PAGE LOADED");
+    console.log('PAGE LOADED');
 
-    // 👉 пока просто проверяем доступ
     const title = await page.title();
+    const url = page.url();
 
     return {
       ok: true,
-      title
+      title,
+      url
     };
-
   } catch (e) {
     return {
       ok: false,
