@@ -1,5 +1,5 @@
 const express = require('express');
-
+const { testRobotaLogin } = require('./robota');
 const app = express();
 app.use(express.json());
 
@@ -15,12 +15,17 @@ app.get('/health', (req, res) => {
   });
 });
 
-app.post('/sync/robota', (req, res) => {
+app.post('/sync/robota', async (req, res) => {
   const secret = req.headers['x-hr-secret'];
 
   if (process.env.HR_SECRET && secret !== process.env.HR_SECRET) {
     return res.status(403).json({ ok: false, error: 'forbidden' });
   }
+
+  const result = await testRobotaLogin();
+
+  return res.json(result);
+});
 
   return res.json({
     ok: true,
